@@ -1,0 +1,14 @@
+{
+  "DeployOpts": {
+    "Env": {},
+    "HostConfig": {
+      "CPUSetCPUs": "1,2",
+      "Memory": 0,
+      "Privileged": true,
+      "PublishAllPorts": true
+    },
+    "InstanceName": "deploy-image-test",
+    "Labels": {"env":"test"}
+  },
+  "ImageName": "gcr.io/myproject-0.0.1-20170508.022121-46.jar:latest"
+}

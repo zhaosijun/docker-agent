@@ -1,0 +1,22 @@
+mall:
+  image: m-amll-admin
+  name: mall
+  ports:
+    - "443:443"
+  links:
+    - mongo:mongo
+    - redis:redis
+mongo:
+  image: mongo
+  name: mongo
+  ports:
+    - "27017:27017"
+  volumes:
+    - /mongo-data:/data/db
+redis:
+  image: redis
+  name: redis
+  ports:
+    - "6379:6379"
+  volumes:
+    - /redis-data:/data

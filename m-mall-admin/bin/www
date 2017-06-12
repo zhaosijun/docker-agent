@@ -1,0 +1,18 @@
+#!/usr/bin/env node
+
+import app from '../app'
+var fs = require('fs');
+var https = require('https');
+var key = fs.readFileSync('./ca/jjsz123.key');
+var cert = fs.readFileSync('./ca/jjsz123.crt');
+var https_options = {
+    key: key,
+    cert: cert
+};
+
+app.set('port', process.env.PORT || 443)
+
+const port = app.get('port')
+const server = https.createServer(https_options, app).listen(port, () => {
+	console.log('------ Express server listening on port ' + server.address().port + ' ------')
+})

@@ -1,0 +1,782 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "beego Test API",
+        "description": "beego has a very cool tools to autogenerate documents for your API",
+        "version": "1.0.0",
+        "termsOfService": "http://beego.me/",
+        "contact": {
+            "email": "astaxie@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        }
+    },
+    "basePath": "/deployservice/v1",
+    "paths": {
+        "/containers/list": {
+            "get": {
+                "tags": [
+                    "containers"
+                ],
+                "description": "List containers",
+                "operationId": "ContainerController.ListContainer",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "context",
+                        "description": "The hostIp for the specified docker",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "all",
+                        "description": "Show all containers, this Default to false",
+                        "type": "boolean"
+                    },
+                    {
+                        "in": "query",
+                        "name": "labels",
+                        "description": "Filter containers by labels, i.e. key=value of a container label",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "status",
+                        "description": "Filter containers by status, i.e. status = (created restarting running paused exited dead)",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/models.RspData"
+                        }
+                    },
+                    "400": {
+                        "description": "parameter error"
+                    },
+                    "500": {
+                        "description": "server error"
+                    }
+                }
+            }
+        },
+        "/containers/{containerid}": {
+            "delete": {
+                "tags": [
+                    "containers"
+                ],
+                "description": "stop a container",
+                "operationId": "ContainerController.RemoveContainer",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "context",
+                        "description": "The hostIp for the specified docker",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "path",
+                        "name": "containerid",
+                        "description": "The Id of Container to Delete",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "force",
+                        "description": "If the container is running, kill it before removing it. Default to true",
+                        "type": "boolean"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "no error"
+                    },
+                    "400": {
+                        "description": "parameter error"
+                    },
+                    "404": {
+                        "description": "no such container"
+                    },
+                    "500": {
+                        "description": "server error"
+                    }
+                }
+            }
+        },
+        "/containers/{containerid}/inspect": {
+            "get": {
+                "tags": [
+                    "containers"
+                ],
+                "description": "Inspect a container info",
+                "operationId": "ContainerController.InspectContainer",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "context",
+                        "description": "The URL for the specified docker",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "path",
+                        "name": "containerid",
+                        "description": "The id or name for the specified container",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/models.RspData"
+                        }
+                    },
+                    "400": {
+                        "description": "parameter error"
+                    },
+                    "404": {
+                        "description": "no such container"
+                    },
+                    "500": {
+                        "description": "server error"
+                    }
+                }
+            }
+        },
+        "/containers/{containerid}/logs": {
+            "get": {
+                "tags": [
+                    "containers"
+                ],
+                "description": "Get logs of a container",
+                "operationId": "ContainerController.LogsContainer",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "context",
+                        "description": "The URL for the specified docker",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "path",
+                        "name": "containerid",
+                        "description": "The id or name for the specified container",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "tail",
+                        "description": "Output specified number of lines at the end of logs: all or \u003cnumber\u003e. Default all",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/models.RspData"
+                        }
+                    },
+                    "400": {
+                        "description": "parameter error"
+                    },
+                    "404": {
+                        "description": "no such container"
+                    },
+                    "500": {
+                        "description": "server error"
+                    }
+                }
+            }
+        },
+        "/containers/{containerid}/start": {
+            "post": {
+                "tags": [
+                    "containers"
+                ],
+                "description": "start a container",
+                "operationId": "ContainerController.StartContainer",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "context",
+                        "description": "The URL for the specified docker",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "path",
+                        "name": "containerid",
+                        "description": "The id or name of container you want to start",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "schema": {
+                            "$ref": "#/definitions/models.RspData"
+                        }
+                    },
+                    "304": {
+                        "description": "container already started"
+                    },
+                    "400": {
+                        "description": "parameter error"
+                    },
+                    "404": {
+                        "description": "no such container"
+                    },
+                    "500": {
+                        "description": "server error"
+                    }
+                }
+            }
+        },
+        "/containers/{containerid}/stats": {
+            "get": {
+                "tags": [
+                    "containers"
+                ],
+                "description": "Stats Container",
+                "operationId": "ContainerController.StatsContainer",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "context",
+                        "description": "The URL for the specified docker",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "path",
+                        "name": "containerid",
+                        "description": "The id or name for the specified container",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "count",
+                        "description": "Number of stats samples to be reported. Default is 1",
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/models.RspData"
+                        }
+                    },
+                    "400": {
+                        "description": "parameter error"
+                    },
+                    "500": {
+                        "description": "server error"
+                    }
+                }
+            }
+        },
+        "/containers/{containerid}/stop": {
+            "post": {
+                "tags": [
+                    "containers"
+                ],
+                "description": "stop a container",
+                "operationId": "ContainerController.StopContainer",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "context",
+                        "description": "The hostIp for the specified docker",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "path",
+                        "name": "containerid",
+                        "description": "The id or name of container you want to delete",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "t",
+                        "description": "The number of seconds to wait before killing the container",
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "schema": {
+                            "$ref": "#/definitions/models.RspData"
+                        }
+                    },
+                    "304": {
+                        "description": "container already stopped"
+                    },
+                    "400": {
+                        "description": "parameter error"
+                    },
+                    "404": {
+                        "description": "no such container"
+                    },
+                    "500": {
+                        "description": "server error"
+                    }
+                }
+            }
+        },
+        "/images/delete": {
+            "get": {
+                "tags": [
+                    "images"
+                ],
+                "description": "Delete images",
+                "operationId": "ImageController.DeleteImages",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "ids",
+                        "description": "The Ids of Images to Delete i.e. 1,2,3",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "no error"
+                    },
+                    "400": {
+                        "description": "parameter error"
+                    },
+                    "500": {
+                        "description": "server error"
+                    }
+                }
+            }
+        },
+        "/images/deploy": {
+            "post": {
+                "tags": [
+                    "images"
+                ],
+                "description": "Deploy service By Image",
+                "operationId": "ImageController.Deploy",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "context",
+                        "description": "The URL for the specified docker",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The deployment options for service",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.DeployImageOpts"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/models.RspData"
+                        }
+                    },
+                    "500": {
+                        "description": "server error"
+                    }
+                }
+            }
+        },
+        "/images/list": {
+            "get": {
+                "tags": [
+                    "images"
+                ],
+                "description": "List images by label",
+                "operationId": "ImageController.List",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "labels",
+                        "description": "Filter Images, i.e. key=value of a Image label",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "description": "The number of Listing Images, default to 10",
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/models.RspData"
+                        }
+                    },
+                    "500": {
+                        "description": "server error"
+                    }
+                }
+            }
+        },
+        "/images/{id}": {
+            "get": {
+                "tags": [
+                    "images"
+                ],
+                "description": "Inspect image",
+                "operationId": "ImageController.InspectImage",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "Id",
+                        "description": "The Id of Image to Inspect",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/models.RspData"
+                        }
+                    },
+                    "400": {
+                        "description": "parameter error"
+                    },
+                    "500": {
+                        "description": "server error"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "images"
+                ],
+                "description": "Delete one image",
+                "operationId": "ImageController.DeleteOneImage",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "Id",
+                        "description": "The Id of Image to Delete",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "no error"
+                    },
+                    "400": {
+                        "description": "parameter error"
+                    },
+                    "500": {
+                        "description": "server error"
+                    }
+                }
+            }
+        },
+        "/jars/deploy": {
+            "post": {
+                "tags": [
+                    "jars"
+                ],
+                "description": "deploy Jar or war package",
+                "operationId": "JarController.Deploy",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "context",
+                        "description": "The URL for the specified docker",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The deployment options for service",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.DeployJarOpts"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/models.RspData"
+                        }
+                    },
+                    "400": {
+                        "description": "parameter error"
+                    },
+                    "500": {
+                        "description": "server error"
+                    }
+                }
+            }
+        },
+        "/jars/push": {
+            "post": {
+                "tags": [
+                    "jars"
+                ],
+                "description": "build image by Jar or war package and push to registry",
+                "operationId": "JarController.Push",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The deployment options for service",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.PushAndBuildJarOpts"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "no error"
+                    },
+                    "500": {
+                        "description": "server error"
+                    }
+                }
+            }
+        },
+        "/nodes/list": {
+            "get": {
+                "tags": [
+                    "nodes"
+                ],
+                "description": "List Nodes",
+                "operationId": "NodeController.ListNodes",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "labels",
+                        "description": "Filter nodes by labels, i.e. key=value of a node label",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/models.RspData"
+                        }
+                    },
+                    "500": {
+                        "description": "server error"
+                    }
+                }
+            }
+        },
+        "/nodes/stats": {
+            "get": {
+                "tags": [
+                    "nodes"
+                ],
+                "description": "Stats Node",
+                "operationId": "NodeController.StatsNode",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "hostname",
+                        "description": "Specify which node to stat",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "count",
+                        "description": "Number of stats samples to be reported. Default is 1",
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/models.RspData"
+                        }
+                    },
+                    "400": {
+                        "description": "parameter error"
+                    },
+                    "500": {
+                        "description": "server error"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        ".false": {
+            "type": "object"
+        },
+        "models.DeployImageOpts": {
+            "title": "DeployImageOpts",
+            "type": "object",
+            "properties": {
+                "DeployOpts": {
+                    "$ref": "#/definitions/models.DeployOpts"
+                },
+                "ImageName": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.DeployJarOpts": {
+            "title": "DeployJarOpts",
+            "type": "object",
+            "properties": {
+                "DeployOpts": {
+                    "$ref": "#/definitions/models.DeployOpts"
+                },
+                "JarUrl": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.DeployOpts": {
+            "title": "DeployOpts",
+            "type": "object",
+            "properties": {
+                "Env": {
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "HostConfig": {
+                    "$ref": "#/definitions/models.HostConfig"
+                },
+                "InstanceName": {
+                    "type": "string"
+                },
+                "Labels": {
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "models.HostConfig": {
+            "title": "HostConfig",
+            "type": "object",
+            "properties": {
+                "CPUSetCPUs": {
+                    "type": "string"
+                },
+                "Memory": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Privileged": {
+                    "type": "boolean"
+                },
+                "PublishAllPorts": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "models.LogConfig": {
+            "title": "LogConfig",
+            "type": "object",
+            "properties": {
+                "Config": {
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "Type": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.PushAndBuildJarOpts": {
+            "title": "PushAndBuildJarOpts",
+            "type": "object",
+            "properties": {
+                "ImageAlias": {
+                    "type": "string"
+                },
+                "JarUrl": {
+                    "type": "string"
+                },
+                "Labels": {
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "models.RspData": {
+            "title": "RspData",
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/8846.0xc42022ea80.false"
+                },
+                "msg": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "images",
+            "description": "Operations about Image\n"
+        },
+        {
+            "name": "containers",
+            "description": "Operations about Container\n"
+        },
+        {
+            "name": "jars",
+            "description": "Operations about Jar\n"
+        },
+        {
+            "name": "nodes",
+            "description": "Operations about Node\n"
+        }
+    ]
+}

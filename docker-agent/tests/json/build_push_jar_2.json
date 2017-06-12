@@ -1,0 +1,4 @@
+{
+  "JarUrl": "http://192.168.88.22:30003/nexus/content/repositories/snapshots/com/example/myproject/0.0.1-SNAPSHOT/myproject-0.0.1-20170508.024408-47.jar",
+  "Labels": {"env":"test"}
+}
